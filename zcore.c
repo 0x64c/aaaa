@@ -132,8 +132,7 @@ for (i=0;i<256;i++)if (texturereload[i]){texturereload[i]=0;if (textureheader[i]
 void zcore_video_init(void)
 {
 SDL_InitSubSystem(SDL_INIT_VIDEO);
-SDL_ShowCursor(0);
-SDL_ShowCursor(0);
+SDL_ShowCursor(SDL_DISABLE);
 
 #ifdef GCW
 int screenbpp=16;
@@ -146,7 +145,8 @@ EGL_SURFACE_TYPE,
 EGL_WINDOW_BIT,
 EGL_NONE
 };
-screen=SDL_SetVideoMode(screenwidth,screenheight,screenbpp, SDL_SWSURFACE);
+//screen=SDL_SetVideoMode(screenwidth,screenheight,screenbpp, SDL_SWSURFACE);
+screen=SDL_SetVideoMode(screenwidth,screenheight,screenbpp, SDL_HWSURFACE|SDL_TRIPLEBUF);
 glDisplay=eglGetDisplay(EGL_DEFAULT_DISPLAY);
 eglInitialize(glDisplay, &majorVersion, &minorVersion );
 eglChooseConfig(glDisplay, egl_config_attr, &glConfig, 1, &numConfigs);
@@ -157,7 +157,6 @@ glSurface = eglCreateWindowSurface(glDisplay, glConfig, 0, NULL);
 glContext = eglCreateContext(glDisplay, glConfig, EGL_NO_CONTEXT, NULL);
 eglMakeCurrent(glDisplay, glSurface, glSurface, glContext);
 eglSwapInterval(glDisplay, 1);      // VSYNC
-SDL_ShowCursor(SDL_DISABLE);
 glVertexPointer(3,GL_FIXED,0,mesh);
 glTexCoordPointer(2,GL_FIXED,0,mesht);
 glFogf(GL_FOG_MODE,GL_LINEAR);
@@ -190,7 +189,6 @@ glContext = eglCreateContext(glDisplay, glConfig, EGL_NO_CONTEXT, NULL);
 glSurface=eglCreateWindowSurface(glDisplay,glConfig,(EGLNativeWindowType)sysInfo.info.x11.window,0);
 eglMakeCurrent(glDisplay, glSurface, glSurface, glContext);
 eglSwapInterval(glDisplay, 1);      // VSYNC
-SDL_ShowCursor(SDL_DISABLE);
 glVertexPointer(3,GL_FIXED,0,mesh);
 glTexCoordPointer(2,GL_FIXED,0,mesht);
 glFogf(GL_FOG_MODE,GL_LINEAR);

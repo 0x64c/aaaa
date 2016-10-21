@@ -59,7 +59,7 @@ extern u16 meshcount;
 
 extern s32 camera[6],tcamera[6],vcamera[3][4],camerasync;
 
-extern u16 screenwidth,screenheight,screenwidth;
+extern u16 screenwidth,screenheight;
 extern u8 whichjoystick;
 extern int fullscreen;
 
