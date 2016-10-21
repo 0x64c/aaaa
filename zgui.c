@@ -226,7 +226,11 @@ zlEndQuads();
 
 zlColor4x(255,255,255,255);
 zlPush();zlTranslate(-53000,2000,0);
+#ifndef GCW
 l_text=sprintf(s_text,"PRESS [Y] TO EXIT GAME");
+#else
+l_text=sprintf(s_text,"PRESS [X] TO EXIT GAME");
+#endif
 zlScale(5000,9000,10000);
 zlRenderText();zlPop();
 if (count/20%2==0)
