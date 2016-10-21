@@ -1,3 +1,4 @@
+#include <math.h>
 #include "vars.h"
 #include "zctables.h"
 

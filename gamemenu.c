@@ -1,6 +1,8 @@
 #include "vars.h"
 #include "render.h"
 #include "zcsound.h"
+#include <stdio.h>
+#include "wmapload.h"
 
 s32 mmpos,lmmpos;
 
@@ -310,7 +312,7 @@ u8 cheatinput[8]={0,0,0,0,0,0,0,0};
 
 void trycheat(void)
 {
-s8 i,k,l,cheat[4],ii;
+s8 i,l,cheat[4],ii;
 if (button[0]==1 | button[1]==1 | button[3]==1)
 {
 for (i=0;i<7;i++)
@@ -484,7 +486,9 @@ if (button[2]==1)
 switch (confsel)
 {
 case 0: zcplaysound(1); newgamemode=ZGM_MENU;break;
+#ifndef NOHAPTIC
 case 3: zcplaysound(1); configdata[10]=(configdata[10]+1)&1;break;
+#endif
 case 4: zcplaysound(1); configdata[11]=(configdata[11]+1)&1;break;
 case 5: zcplaysound(1); configdata[12]=(configdata[12]+1)%3;break;
 case 6: zcplaysound(1); configdata[13]=(configdata[13]+1)&1;break;
@@ -503,7 +507,12 @@ break;
 }
 sprintf(conftxt[1],"SOUND VOLUME %i%i%i",configdata[8]/100,configdata[8]/10%10,configdata[8]%10);
 sprintf(conftxt[2],"MUSIC VOLUME %i%i%i",configdata[9]/100,configdata[9]/10%10,configdata[9]%10);
+#ifndef NOHAPTIC
 if (configdata[10]) sprintf(conftxt[3],"VIBRATION  <ON>"); else sprintf(conftxt[3],"VIBRATION  <OFF>");
+#else
+if (configdata[10]) sprintf(conftxt[3],"HAPTIC  DISABLED");
+else sprintf(conftxt[3],"HAPTIC  DISABLED");
+#endif
 if (configdata[11]) sprintf(conftxt[4],"G-SENSE    <ON>"); else sprintf(conftxt[4],"G-SENSE    <OFF>");
 sprintf(conftxt[5],"TURBO MODE <%s>",fstxt[configdata[12]]);
 if (configdata[13]) sprintf(conftxt[6],"FILM GRAIN <ON>"); else sprintf(conftxt[6],"FILM GRAIN <OFF>");

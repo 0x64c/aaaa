@@ -1,3 +1,4 @@
+#include <math.h>
 #include "vars.h"
 
 #include "SDL/SDL.h"
@@ -57,7 +58,7 @@ last_bgm=bgm;
 
 void zcplaysound3d(unsigned char index,unsigned char ssize,signed long xx,signed long yy,signed long zz)
 {
-s32 vx,vy,vz,ss,r,l,v,v1,range;
+s32 vx,vy,vz,ss,r,l,v,range;
 float f_range;
 
 if (configdata[8])

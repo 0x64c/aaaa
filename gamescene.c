@@ -5,6 +5,9 @@
 #include "veryblend.h"
 #include "bullets.h"
 #include "narrator.h"
+#include "camera.h"
+#include "SDL/SDL.h"
+#include "wmapload.h"
 
 #include "zgui.h"
 #include "wlight.h"
@@ -88,7 +91,7 @@ newlight((x<<16)+32768,(y<<16)+32768,(z<<16)+32768,(l)+(l<<8)+(l<<16)+(3<<24));b
 
 void procmp1(u8 x,u8 y,u8 z)
 {
-s32 x0,y0,z0,sizex,sizey,wtx,wty,wz[4],howfar,r,g,b,ir,ig,ib,wtune;
+s32 x0,y0,z0,sizex,sizey,wtx,wty,wz[4],howfar,r,g,b,ir,ig,ib;
 wtx=(f_cos[(count*3)&4095])>>1;
 wty=(f_sin[(count*4)&4095])>>1;
 x0=((x)<<16)+32728;
@@ -607,7 +610,7 @@ break;
 
 //contblock {0r 1g 2b}
 
-s32 mapframecount=0,maptick=0,lcx,lcy,lcz,rdata[3];
+s32 mapframecount=0,maptick=0,rdata[3];
 void RenderMap(void)
 {
 u8 cmapmaxh,cmapmaxy;
@@ -632,12 +635,7 @@ emittick2=0;
 if ((count % 48)==0) emittick=1;
 if ((count % 240)==0) emittick2=1;
 
-s32 cx,cy,cz,cx0,cx1,cy0,cy1,cz0,cz1,ix,iy,iz,xx,yy,zz,dd,ddx,ddy;
-
-lcx=cx;
-lcy=cy;
-lcz=cz;
-
+s32 cx,cy,cz,cx0,cx1,cy0,cy1,cz0,cz1,ix,iy,iz,xx,yy,zz,dd,ddx;
 
 cx=((camera[0])>>16);cy=((camera[2])>>16);cz=((camera)[1]>>16);
 
@@ -654,18 +652,7 @@ if (cy1>cmapmaxh) cy1=cmapmaxh;
 if (cz1>cmapmaxy) cz1=cmapmaxy;
 
 s32 fog_end2=fog_end+65536;
-u8 vis;
 u32 verts=0,sverts=0,verts0=0;
-
-u8 isee;
-s32 sx,sy,sz,iisx,iisy,iisz,iseesteps,t,scx,scy,scz;
-
-scx=camera[0];
-scy=camera[2];
-scz=camera[1];
-
-sx=RENDERCUBEW*2;
-sz=RENDERCUBEY*2;
 
 contblock[0]=0;
 contblock[1]=0;
@@ -804,10 +791,6 @@ if (intrestingmp[x][y][z])
 ix=x-cx0;
 iy=y-cy0;
 iz=z-cz0;
-
-sx=x-cx+10;
-sy=y-cy+10;
-//sz=z-cz;
 
 if (cert[ix][iy][iz])
 {
@@ -1338,7 +1321,6 @@ switch (mpheader[21])
 case 1://simulator
 zlBeginQuads();
 zlBindTexture(80);
-s32 x;
 x=(count*10 %65536);
 zlColor4x(255,255,255,255);
 zlTexCoord2x(x,x);
@@ -1468,7 +1450,9 @@ zlRotatex(camera[3]);
 zlRotatey(camera[4]);
 zlDepthTest(0);
 rendersky();
+#ifndef NOFOG
 zlFog(1);
+#endif
 zlTranslate(-camera[0],-camera[1],-camera[2]);
 zlDepthTest(1);
 predrawmp1();//lights

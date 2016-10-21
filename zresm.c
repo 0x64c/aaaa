@@ -39,7 +39,11 @@ fclose(fp);
 void loadconfig(void)
 {
 FILE *fp;u8 i;
+#ifdef GCW
+fp=fopen("/media/data/local/home/.aaaa/donothexedit.me","rb");
+#else
 fp=fopen("donothexedit.me","rb");
+#endif
 for (i=0;i<32;i++) configdata[i]=fgetc(fp);
 fclose(fp);
 }
@@ -47,7 +51,11 @@ fclose(fp);
 void saveconfig(void)
 {
 FILE *fp;u8 i;
+#ifdef GCW
+fp=fopen("/media/data/local/home/.aaaa/donothexedit.me","wb");
+#else
 fp=fopen("donothexedit.me","wb");
+#endif
 for (i=0;i<32;i++) fputc(configdata[i],fp);
 fclose(fp);
 }

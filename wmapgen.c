@@ -15,7 +15,7 @@ generateautismmap();
 
 void generateeditmap(void)
 {
-u8 t,i,x,y;
+u8 t;
 t=10;
 mpheader[8]=10;
 mpheader[9]=6;

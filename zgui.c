@@ -1,7 +1,8 @@
+#include <stdio.h>
 #include "vars.h"
 #include "render.h"
 #include "zlmath.h"
-
+#include "wmapload.h"
 
 void procnoise(void)
 {

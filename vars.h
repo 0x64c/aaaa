@@ -18,15 +18,22 @@ extern s32 fps,tickcount;
 extern u8 secretskin;
 #define MESH_CNT 16384
 
+#if !defined(NOHAPTIC)&&(defined(PCEGL)||defined(GCW))
+u8 vibrogcw;
+#endif
+
+#ifdef GCW
+u8 gsensor_recentre;
+#endif
+
 #ifdef PC32
 #include "GL/gl.h"
 extern GLfloat mesh[MESH_CNT*3];
 extern GLfloat mesht[MESH_CNT*2];
 #endif
 
-#ifdef GP2X
-
-#ifdef GP2XCAANOO
+#if defined(GP2X) || defined(PCEGL) || defined(GCW)
+#if defined(GP2XCAANOO) || defined(PCEGL) || defined(GCW)
 #include "GLES/gl.h"
 #endif
 #ifdef GP2XWIZ
@@ -46,13 +53,15 @@ extern u8 meshtid[MESH_CNT];
 
 extern u8 textureheader[256][4],texturereload[256];
 extern u16 texturedata[1048576*5/2];
-extern u32 texturepointer[128];
+extern u32 texturepointer[256];
 
 extern u16 meshcount;
 
 extern s32 camera[6],tcamera[6],vcamera[3][4],camerasync;
 
-extern u16 screenwidth,screenheight;
+extern u16 screenwidth,screenheight,screenwidth;
+extern u8 whichjoystick;
+extern int fullscreen;
 
 #define MAPSIZEH 128
 #define MAPSIZEY 64

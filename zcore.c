@@ -1,5 +1,6 @@
 #include "SDL/SDL.h"
 #include "SDL/SDL_mixer.h"
+#include "zlext.h"
 
 #ifdef PC32
 
@@ -14,7 +15,7 @@ SDL_Surface *screen = NULL;
 #include "Panel/fake_os.h"
 #endif
 
-#ifdef GP2X
+#if defined(GP2X) || defined(GCW) || defined(PCEGL)
 #ifdef GP2XCAANOO
 #include "GLES/gl.h"
 #include "GLES/egl.h"
@@ -26,11 +27,26 @@ SDL_Surface *screen = NULL;
 #include "OpenGLES/glext.h"
 #endif
 
+#ifdef GCW
+#include "GLES/gl.h"
+#include "GLES/egl.h"
+#include "GLES/glext.h"
+#include <SDL/SDL_syswm.h>
+#endif
+
+#ifdef PCEGL
+#include "GLES/gl.h"
+#include "GLES/egl.h"
+#include "GLES/glext.h"
+#include <SDL/SDL_syswm.h>
+#include <X11/Xlib.h>
+Display *g_x11Display = NULL;
+#endif
+
 EGLDisplay glDisplay;
 EGLConfig glConfig;
 EGLContext glContext;
 EGLSurface glSurface;
-NativeWindowType hNativeWnd=0;
 const char *gl_vendor,*gl_renderer,*gl_version,*gl_extensions;
 EGLint attrib_list_fsaa[]={EGL_SURFACE_TYPE,EGL_WINDOW_BIT,EGL_BUFFER_SIZE,16,EGL_DEPTH_SIZE,16,EGL_SAMPLE_BUFFERS,1,EGL_SAMPLES,4,EGL_NONE};
 EGLint attrib_list[]={EGL_SURFACE_TYPE,EGL_WINDOW_BIT,EGL_BUFFER_SIZE,16,EGL_DEPTH_SIZE,16,EGL_NONE};
@@ -115,10 +131,72 @@ for (i=0;i<256;i++)if (texturereload[i]){texturereload[i]=0;if (textureheader[i]
 
 void zcore_video_init(void)
 {
-screenwidth=640;screenheight=480;
 SDL_InitSubSystem(SDL_INIT_VIDEO);
 SDL_ShowCursor(0);
 SDL_ShowCursor(0);
+
+#ifdef GCW
+int screenbpp=16;
+EGLint numConfigs,majorVersion,minorVersion;
+EGLint egl_config_attr[] = {
+EGL_BUFFER_SIZE,   16,
+EGL_DEPTH_SIZE,    16,     
+EGL_STENCIL_SIZE,  0,
+EGL_SURFACE_TYPE,
+EGL_WINDOW_BIT,
+EGL_NONE
+};
+screen=SDL_SetVideoMode(screenwidth,screenheight,screenbpp, SDL_SWSURFACE);
+glDisplay=eglGetDisplay(EGL_DEFAULT_DISPLAY);
+eglInitialize(glDisplay, &majorVersion, &minorVersion );
+eglChooseConfig(glDisplay, egl_config_attr, &glConfig, 1, &numConfigs);
+SDL_SysWMinfo sysInfo;
+SDL_VERSION(&sysInfo.version);
+SDL_GetWMInfo(&sysInfo);
+glSurface = eglCreateWindowSurface(glDisplay, glConfig, 0, NULL);
+glContext = eglCreateContext(glDisplay, glConfig, EGL_NO_CONTEXT, NULL);
+eglMakeCurrent(glDisplay, glSurface, glSurface, glContext);
+eglSwapInterval(glDisplay, 1);      // VSYNC
+SDL_ShowCursor(SDL_DISABLE);
+glVertexPointer(3,GL_FIXED,0,mesh);
+glTexCoordPointer(2,GL_FIXED,0,mesht);
+glFogf(GL_FOG_MODE,GL_LINEAR);
+glAlphaFuncx(GL_GREATER,65536/2);
+#endif
+
+#ifdef PCEGL
+const char* output;
+EGLBoolean result;
+EGLint egl_config_attr[] = {
+EGL_BUFFER_SIZE,   16,
+EGL_DEPTH_SIZE,    16,     
+EGL_STENCIL_SIZE,  0,
+EGL_SURFACE_TYPE,
+EGL_WINDOW_BIT,
+EGL_NONE
+};
+EGLint numConfigs,majorVersion,minorVersion;
+int screenbpp=16;
+screen=SDL_SetVideoMode(screenwidth,screenheight,screenbpp, SDL_SWSURFACE|fullscreen); // | SDL_FULLSCREEN);
+g_x11Display = XOpenDisplay(NULL);
+#define _EGL_DSP (EGLNativeDisplayType)g_x11Display
+glDisplay=eglGetDisplay(_EGL_DSP);
+eglInitialize(glDisplay, &majorVersion, &minorVersion );
+eglChooseConfig(glDisplay, egl_config_attr, &glConfig, 1, &numConfigs);
+SDL_SysWMinfo sysInfo;
+SDL_VERSION(&sysInfo.version); //Set SDL version
+SDL_GetWMInfo(&sysInfo);
+glContext = eglCreateContext(glDisplay, glConfig, EGL_NO_CONTEXT, NULL);
+glSurface=eglCreateWindowSurface(glDisplay,glConfig,(EGLNativeWindowType)sysInfo.info.x11.window,0);
+eglMakeCurrent(glDisplay, glSurface, glSurface, glContext);
+eglSwapInterval(glDisplay, 1);      // VSYNC
+SDL_ShowCursor(SDL_DISABLE);
+glVertexPointer(3,GL_FIXED,0,mesh);
+glTexCoordPointer(2,GL_FIXED,0,mesht);
+glFogf(GL_FOG_MODE,GL_LINEAR);
+glAlphaFuncx(GL_GREATER,65536/2);
+#endif
+
 #ifdef PC32
 //screenwidth=800;
 //screenheight=600;
@@ -184,7 +262,7 @@ corerenderrender();
 SDL_GL_SwapBuffers();
 #endif
 
-#ifdef GP2X
+#if defined(GP2X) || defined(GCW) || defined(PCEGL)
 eglSwapBuffers(glDisplay, glSurface);
 #endif
 }
@@ -193,11 +271,13 @@ eglSwapBuffers(glDisplay, glSurface);
 void zcore_video_down(void)
 {
 glDeleteTextures(256,zc_texture);
-#ifdef GP2X
+#if defined(GP2X) || defined(PCEGL) || defined(GCW)
 eglDestroySurface(glDisplay,glSurface);
 eglDestroyContext(glDisplay,glContext);
 eglTerminate(glDisplay);
+#ifdef GP2X
 free(hNativeWnd);
+#endif
 #endif
 }
 
@@ -228,7 +308,7 @@ Mix_CloseAudio();
 // Sound SubSystem End
 // Input SubSystem Begin
 
-#ifdef PC32
+#if defined(PC32) || defined(PCEGL)
 int i_keyb[20];
 static const SDLKey code_keyb[20]=
 {
@@ -237,6 +317,17 @@ SDLK_ESCAPE,SDLK_c,SDLK_q,SDLK_w,SDLK_e,SDLK_r,SDLK_t,SDLK_BACKSPACE,
 SDLK_UP,SDLK_RIGHT,SDLK_DOWN,SDLK_LEFT
 };
 s8 jkey_map[16]={0,1,2,3,4,5,6,7,8,9,-1,-1,-1,-1,-1,-1};
+#endif
+
+#ifdef GCW
+int i_keyb[20];
+static const SDLKey code_keyb[20]=
+{
+SDLK_SPACE,SDLK_LALT,SDLK_LCTRL,SDLK_LSHIFT,SDLK_TAB,SDLK_BACKSPACE,SDLK_7,SDLK_8,
+SDLK_RETURN,SDLK_ESCAPE,SDLK_q,SDLK_w,SDLK_e,SDLK_r,SDLK_t,SDLK_PAUSE,
+SDLK_UP,SDLK_RIGHT,SDLK_DOWN,SDLK_LEFT
+};
+s8 jkey_map[16]= {0,1,2,3,4,5,6,7,8,9,-1,-1,-1,-1,-1,-1};
 #endif
 
 #ifdef GP2XWIZ
@@ -257,8 +348,14 @@ u8 i;
 
 SDL_InitSubSystem(SDL_INIT_JOYSTICK);
 for (i=0;i<16;i++) button[i]=0;
-if (SDL_NumJoysticks()>0) { gamepad=SDL_JoystickOpen(0);}
-}
+if (SDL_NumJoysticks()>0) { 
+#ifdef GCW
+for (i = 0; i < SDL_NumJoysticks(); i++){
+if (strcmp(SDL_JoystickName(i), "linkdev device (Analog 2-axis 8-button 2-hat)") == 0) gamepad = SDL_JoystickOpen(i);}
+#else
+gamepad=SDL_JoystickOpen(whichjoystick);
+#endif
+}}
 
 u16 s_button[16];
 
@@ -291,15 +388,19 @@ SDL_Event event;
 while (SDL_PollEvent (&event))
 switch (event.type)
 {
-#ifdef PC32
+#if defined(PC32) || defined(GCW) || defined(PCEGL)
 case SDL_KEYDOWN:
 for (i=0;i<20;i++) if (event.key.keysym.sym==code_keyb[i]) i_keyb[i]=1; break;
-case SDL_KEYUP: for (i=0;i<20;i++) if (event.key.keysym.sym==code_keyb[i]) i_keyb[i]=0; break;
+case SDL_KEYUP: for (i=0;i<20;i++) if (event.key.keysym.sym==code_keyb[i]) i_keyb[i]=0; 
+#ifdef GCW //recentre gsensor with home button (power switch)
+if(event.key.keysym.sym==SDLK_HOME) gsensor_recentre=1;
+#endif
+break;
 #endif
 case SDL_QUIT:zcoreenabled=0;break;
 }
 
-#ifdef PC32
+#if defined(PC32) || defined(GCW) || defined(PCEGL)
 for (k=0;k<16;k++) {if (i_keyb[k]>0) s_button[k]++;}
 if (i_keyb[16]>0) axis[1]=-128;
 if (i_keyb[17]>0) axis[0]=128;
@@ -374,7 +475,7 @@ if (thisframenice) calcfps();
 #ifdef PC32
 SDL_Delay(5);
 #endif
-#ifdef GP2X
+#if defined(GP2X) || defined(GCW) || defined(PCEGL)
 if (gamemode!=ZGM_MENU & gamemode!=ZGM_CONFIG & gamemode!=ZGM_SELECTOR)
 if (frameskip)
 if (thisframenice)

@@ -7,6 +7,8 @@
 #include "sprites.h"
 #include "bullets.h"
 
+#include "zcsound.h"
+#include "particles.h"
 
 #define FPML(x,y) ((((x)>>7)*((y)>>7))>>2)
 
@@ -202,7 +204,11 @@ genpartdir(128);
 newparticle();
 }
 
-if (i==mobcontrol) {vibro=128;tension[4]=255;tension[5]=0;tension[6]=0;tension[7]=255;}
+if (i==mobcontrol) {vibro=128;
+#if !defined(NOHAPTIC)&&(defined(PCEGL)||defined(GCW))
+vibrogcw=3;
+#endif
+tension[4]=255;tension[5]=0;tension[6]=0;tension[7]=255;}
 
 mob[i][42]++;
 
@@ -214,7 +220,12 @@ void mobstrike(u8 i)
 {
 u8 k;
 s32 xx,yy,dd;
-if (i==mobcontrol) if (vibro<88) vibro=88;
+if (i==mobcontrol) {
+if (vibro<88) vibro=88;
+#if !defined(NOHAPTIC)&&(defined(PCEGL)||defined(GCW))
+if(vibrogcw<1)vibrogcw=1;
+#endif
+}
 
 zcplaysound3d(11,5,mob[i][1],mob[i][2],mob[i][3]);
 
@@ -385,7 +396,12 @@ bullet[32][8]=a0;
 newbullet();
 
 
-if (i==mobcontrol) if (vibro<100) vibro=100;
+if (i==mobcontrol){
+if (vibro<100) vibro=100;
+#if !defined(NOHAPTIC)&&(defined(PCEGL)||defined(GCW))
+if(vibrogcw<2)vibrogcw=2;
+#endif
+}
 }
 
 s32 mobw=26000,mobh=65536+40000;
@@ -556,8 +572,12 @@ if (mob[i][6]<-1000)
 {
 zcplaysound3d(8,5,mob[i][1],mob[i][2],mob[i][3]);
 
-if (i==mobcontrol)
+if (i==mobcontrol){
 if (vibro<88) vibro=88;
+#if !defined(NOHAPTIC)&&(defined(PCEGL)||defined(GCW))
+if (vibrogcw<1) vibrogcw=1;
+#endif
+}
 }
 
 
@@ -667,7 +687,7 @@ mob[k][5]-=dy>>5;
 
 void mobloot(u8 i)
 {
-s32 x,y,z,k,xx,yy,zz;
+s32 x,y,z,k,xx,yy;
 x=mob[i][1]>>16;
 y=mob[i][2]>>16;
 z=mob[i][3]>>16;

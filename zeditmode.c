@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "vars.h"
 #include "render.h"
 #include "wmapload.h"
@@ -50,7 +51,7 @@ mpedit(xx+x,yy+y,zz+z,index);
 
 void zeditpaint(void)
 {
-s32 x,y,z,l,lx,ix,iy,i,id,dx,dy,xx,yy,zz;
+s32 x,y,z,l,lx,ix,iy,i,id,dx,dy;
 
 lx=65536/5;
 l=65536/4;

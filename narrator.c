@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "vars.h"
 #include "render.h"
 #include "zlmath.h"
@@ -68,7 +69,7 @@ zlPop();
 
 void narrationsubtitles(void)
 {
-s32 i,k,l,sc,r,g,b,a;
+s32 i,k;
 
 l_text=0;
 switch (narration)

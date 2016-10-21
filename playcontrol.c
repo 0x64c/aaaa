@@ -1,6 +1,9 @@
 #include "vars.h"
 #include "camera.h"
 #include "intro.h"
+#include "zcsound.h"
+#include "wmapload.h"
+#include "mobs.h"
 
 #define FPML(x,y) ((((x)>>7)*((y)>>7))>>2)
 
@@ -269,7 +272,11 @@ if (mp[x>>16][y>>16][z>>16][0]>0) block=2;
 
 if (block==2)
 if (button[2]==1)
-{mpedit((x)>>16,(y)>>16,(z)>>16,0);autismdelay=512;vibro=127;zcplaysound(13);}
+{mpedit((x)>>16,(y)>>16,(z)>>16,0);autismdelay=512;vibro=127;
+#if !defined(NOHAPTIC)&&(defined(PCEGL)||defined(GCW))
+vibrogcw=3;
+#endif
+zcplaysound(13);}
 else
 {
 block=2;
@@ -288,7 +295,11 @@ if (((z)<<16)+32768-mob[mobcontrol][3]>-32636)
 block=1;
 
 if (block==2)
-{mpedit((x),(y),(z),1+autismstuff);autismdelay=512;vibro=127;zcplaysound(13);}
+{mpedit((x),(y),(z),1+autismstuff);autismdelay=512;vibro=127;
+#if !defined(NOHAPTIC)&&(defined(PCEGL)||defined(GCW))
+vibrogcw=3;
+#endif
+zcplaysound(13);}
 }
 }
 

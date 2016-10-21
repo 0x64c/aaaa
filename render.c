@@ -7,7 +7,7 @@
 #endif
 
 
-#ifdef GP2XCAANOO
+#if defined(GP2XCAANOO) || defined(GCW) || defined(PCEGL)
 #include "GLES/gl.h"
 #include "GLES/egl.h"
 #include "GLES/glext.h"
@@ -86,7 +86,7 @@ void zlClrDepth(void)
 
 void zlTranslate(signed long x,signed long y,signed long z)
 {
-#ifdef GP2X
+#if defined(GP2X) || defined(PCEGL) || defined(GCW)
 glTranslatex(x,y,z);
 #endif
 #ifdef PC32
@@ -95,7 +95,7 @@ glTranslatef(x/65536.0,y/65536.0,z/65536.0);
 }
 void zlRotatex(signed long x)
 {
-#ifdef GP2X
+#if defined(GP2X) || defined(PCEGL) || defined(GCW)
 glRotatex(x*5760,65536,0,0);
 #endif
 #ifdef PC32
@@ -104,7 +104,7 @@ glRotatef(x/11.37778,1.0,0.0,0.0);
 }
 void zlRotatey(signed long y)
 {
-#ifdef GP2X
+#if defined(GP2X) || defined(PCEGL) || defined(GCW)
 glRotatex(y*5760,0,65536,0);
 #endif
 #ifdef PC32
@@ -113,7 +113,7 @@ glRotatef(y/11.37778,0.0,1.0,0.0);
 }
 void zlRotatez(signed long z)
 {
-#ifdef GP2X
+#if defined(GP2X) || defined(PCEGL) || defined(GCW)
 glRotatex(z*5760,0,0,65536);
 #endif
 #ifdef PC32
@@ -122,7 +122,7 @@ glRotatef(z/11.37778,0.0,0.0,1.0);
 }
 void zlScale(signed long x,signed long y,signed long z)
 {
-#ifdef GP2X
+#if defined(GP2X) || defined(PCEGL) || defined(GCW)
 glScalex(x,y,z);
 #endif
 #ifdef PC32
@@ -135,7 +135,7 @@ void zlFogParam(signed long fogstart,signed long fogend)
 glFogf(GL_FOG_START,fogstart/65536.0f);
 glFogf(GL_FOG_END,fogend/65536.0f);
 #endif
-#ifdef GP2X
+#if defined(GP2X) || defined(PCEGL) || defined(GCW)
 glFogx(GL_FOG_START,fogstart);
 glFogx(GL_FOG_END,fogend);
 #endif
@@ -165,7 +165,7 @@ RenderMeshii(first,pcount);
 
 void zlScreen(signed long x,signed long y,signed long zoom)
 {
-#ifdef GP2X
+#if defined(GP2X) || defined(PCEGL) || defined(GCW)
 glMatrixMode(GL_PROJECTION);
 glLoadIdentity();
 glFrustumx(-x,x,-y,y,zoom,fog_end);
@@ -198,7 +198,7 @@ if (value==1)
 {
 glEnable(GL_BLEND);
 
-#ifdef GP2X
+#if defined(GP2X) || defined(PCEGL) || defined(GCW)
 glAlphaFuncx(GL_GREATER,65);
 #endif
 #ifdef PC32
@@ -208,7 +208,7 @@ glAlphaFunc(GL_GREATER,0.01f);
 else
 {
 glDisable(GL_BLEND);
-#ifdef GP2X
+#if defined(GP2X) || defined(PCEGL) || defined(GCW)
 glAlphaFuncx(GL_GREATER,31728);
 #endif
 #ifdef PC32

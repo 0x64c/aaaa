@@ -1,5 +1,88 @@
 #include "vars.h"
 
+#ifndef NOHAPTIC
+#if defined(GCW)||defined(PCEGL)
+#include <shake.h>
+#include <unistd.h>
+Shake_Device *device;
+Shake_Effect effect, effect2, effect3;
+int id, id2, id3;
+void zlInitVibe(void){
+    Shake_Init();
+    if(Shake_NumOfDevices()>0){
+        device = Shake_Open(0);
+	Shake_SimpleRumble(&effect,80.0,30.0,0.3);
+	Shake_SimpleRumble(&effect2,60.0,20.0,0.2);
+	Shake_SimpleRumble(&effect3,30.0,10.0,0.2);
+	id = Shake_UploadEffect(device, &effect);
+	id2 = Shake_UploadEffect(device, &effect2);
+	id3 = Shake_UploadEffect(device, &effect3);
+    }
+}
+void zlProcVibe(void){
+    if (vibrogcw==3)
+        Shake_Play(device, id);
+    else if (vibrogcw==2)
+        Shake_Play(device, id2);
+    else if (vibrogcw==1)
+        Shake_Play(device, id3);
+    vibrogcw=0;
+}
+void zlShutDownVibe(void){
+    Shake_EraseEffect(device, id);
+    Shake_EraseEffect(device, id2);
+    Shake_EraseEffect(device, id3);
+    Shake_Close(device);
+    Shake_Quit();
+}
+#endif
+#endif
+#ifdef GCW
+#include "SDL/SDL.h"
+SDL_Joystick *gamepad_sensor=NULL;
+void zlInitGSensor(){
+    for (int i = 0; i < SDL_NumJoysticks(); i++) //find the right joystick device for gsensor
+    {
+        if (strcmp(SDL_JoystickName(i), "mxc6225") == 0)
+            gamepad_sensor = SDL_JoystickOpen(i);
+    }
+}
+int x_correct=0;
+int y_correct=0;
+void zlProcGSensor(){
+    int x,y,ix,iy;
+    x=-SDL_JoystickGetAxis(gamepad_sensor,0)>>5; //this side up
+    y=SDL_JoystickGetAxis(gamepad_sensor,1)>>5;
+    if(gsensor_recentre==1){ //catch recentre flag
+        x_correct=-x;
+        y_correct=-y+512;
+        gsensor_recentre=0;
+    }
+
+    ix=x+x_correct-gsensor[0]; //magic below here
+    iy=y+y_correct-gsensor[1];
+
+    gsensor[0]=x;
+    gsensor[1]=y;
+
+    int gsensor_filter=40;
+
+    if (abs(ix)<gsensor_filter) ix=0;
+    if (abs(iy)<gsensor_filter) iy=0;
+
+    gsensor[3]=gsensor[3]+(ix-gsensor[3])/4;
+    gsensor[4]=gsensor[4]+(iy-gsensor[4])/4;
+
+    int gsensor_filter0=5;
+
+    if (abs(gsensor[3])<gsensor_filter0) gsensor[3]=0;
+    if (abs(gsensor[4])<gsensor_filter0) gsensor[4]=0;
+}
+void zlShutDownGSensor(){
+    SDL_JoystickClose(gamepad_sensor);
+}
+#endif
+
 #ifdef GP2XCAANOO
 //Vibration
 
@@ -206,12 +289,18 @@ close(mdev);
 
 void zlextinit(void)
 {
-#ifdef GP2XCAANOO
+#if defined(GP2XCAANOO) || defined(GCW) || defined(PCEGL)
+#ifndef NOHAPTIC
 zlInitVibe();
+#endif
+#ifndef PCEGL
 zlInitGSensor();
-
+#endif
+#endif
+#ifdef GP2XCAANOO
 caanoohack();
 #endif
+
 #ifdef GP2XWZ
 wizhack();
 
@@ -221,7 +310,8 @@ void zlextframe(void)
 {
 if (vibro>-64) vibro-=20;
 
-#ifdef GP2XCAANOO
+#if defined(GP2XCAANOO) || defined(GCW) || defined(PCEGL)
+#ifndef PCEGL
 if (configdata[11])
 {
 zlProcGSensor();
@@ -234,16 +324,28 @@ gsensor[0]=0;gsensor[1]=0;gsensor[2]=0;gsensor[3]=0;gsensor[4]=0;gsensor[5]=0;
 consoleturn[0]=0;
 consoleturn[1]=0;
 }
+#endif
 
-if (configdata[10]) zlProcVibe(); else vibro=-80;
+#ifndef NOHAPTIC
+if (configdata[10]) zlProcVibe(); 
+#ifdef GP2XCAANOO
+else vibro=-80;
+#else
+else vibrogcw=0;
+#endif
+#endif
 
 #endif
 }
 
 void zlextshutdown(void)
 {
-#ifdef GP2XCAANOO
+#if defined(GP2XCAANOO) || defined(GCW) || defined(PCEGL)
+#ifndef NOHAPTIC
 zlShutDownVibe();
+#endif
+#ifndef PCEGL
 zlShutDownGSensor();
+#endif
 #endif
 }

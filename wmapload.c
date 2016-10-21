@@ -6,6 +6,7 @@
 #include "wlight.h"
 
 #include "mobs.h"
+#include "SDL/SDL.h"
 
 #define FPML(x,y) ((((x)>>7)*((y)>>7))>>2)
 
@@ -368,7 +369,7 @@ fclose(fp);
 
 void reshadelight(void)
 {
-u32 i,x,y,z;
+u32 x,y,z;
 
 for (z=1;z<mpheader[9]-1;z++)
 for (y=1;y<mpheader[8]-1;y++)
@@ -386,7 +387,7 @@ mpc[x][y][z]=2;
 
 void reshadealllight(void)
 {
-u32 i,x,y,z;
+u32 x,y,z;
 
 for (z=1;z<mpheader[9]-1;z++)
 for (y=1;y<mpheader[8]-1;y++)

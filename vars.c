@@ -27,8 +27,16 @@ GLfloat mesh[MESH_CNT*3];
 GLfloat mesht[MESH_CNT*2];
 #endif
 
-#ifdef GP2X
-#ifdef GP2XCAANOO
+#if !defined(NOHAPTIC)&&(defined(PCEGL)||defined(GCW))
+u8 vibrogcw=3;
+#endif
+
+#ifdef GCW
+u8 gsensor_recentre=1;
+#endif
+
+#if defined(GP2X) || defined(PCEGL) || defined(GCW)
+#if defined(GP2XCAANOO) || defined(PCEGL) || defined(GCW)
 #include "GLES/gl.h"
 #endif
 #ifdef GP2XWIZ
@@ -48,12 +56,18 @@ u8 meshtid[MESH_CNT];
 
 u8 textureheader[256][4],texturereload[256];
 u16 texturedata[1048576*5/2];
-u32 texturepointer[128];
+u32 texturepointer[256];
 
 u16 meshcount;
 
 s32 camera[6],tcamera[6],vcamera[3][4],camerasync;
-u16 screenwidth,screenheight;
+#if defined(GCW) || defined(GP2X)
+u16 screenwidth=320,screenheight=240;
+#else
+u16 screenwidth=800,screenheight=600;
+#endif
+u8 whichjoystick=0;
+int fullscreen=0;
 
 #define MAPSIZEH 128
 #define MAPSIZEY 64
