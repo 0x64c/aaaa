@@ -7,6 +7,7 @@ GCW0 port of aaaa based on original linux port codebase
 - Haptic feedback
 - G-Sensor
 - Commandline arguments
+- Titlecard by hi-ban
 
 ## Controls:
 - A: Confirm/Sword
@@ -21,6 +22,7 @@ GCW0 port of aaaa based on original linux port codebase
 - Joypad: Analogue movement
 - HOLD: Exit to OS immediately
 - POWER: Re-centre G-Sensor
+- G-Sensor: Camera tilt
 
 ## Known bugs:
 - Force feedback is glitchy due to GCW0's driver, so disabled by Makefile (needs firmware fix)
