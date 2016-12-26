@@ -10,7 +10,6 @@
 SDL_Surface *screen = NULL;
 #endif
 
-
 #ifdef GP2XWIZ
 #include "Panel/fake_os.h"
 #endif
@@ -48,8 +47,12 @@ EGLConfig glConfig;
 EGLContext glContext;
 EGLSurface glSurface;
 const char *gl_vendor,*gl_renderer,*gl_version,*gl_extensions;
-EGLint attrib_list_fsaa[]={EGL_SURFACE_TYPE,EGL_WINDOW_BIT,EGL_BUFFER_SIZE,16,EGL_DEPTH_SIZE,16,EGL_SAMPLE_BUFFERS,1,EGL_SAMPLES,4,EGL_NONE};
-EGLint attrib_list[]={EGL_SURFACE_TYPE,EGL_WINDOW_BIT,EGL_BUFFER_SIZE,16,EGL_DEPTH_SIZE,16,EGL_NONE};
+EGLint attrib_list_fsaa[]={
+	EGL_SURFACE_TYPE,EGL_WINDOW_BIT,EGL_BUFFER_SIZE,16,EGL_DEPTH_SIZE,16,EGL_SAMPLE_BUFFERS,1,EGL_SAMPLES,4,EGL_NONE
+};
+EGLint attrib_list[]={
+	EGL_SURFACE_TYPE,EGL_WINDOW_BIT,EGL_BUFFER_SIZE,16,EGL_DEPTH_SIZE,16,EGL_NONE
+};
 
 SDL_Surface *screen = NULL;
 #endif
@@ -72,209 +75,212 @@ GLushort texturedata_0[65536];
 
 u8 filtertag[256]=
 {
-0,0,0,0,1,0,0,1, 0,0,1,0,0,0,0,0,
-1,1,1,1,1,1,1,1, 0,0,0,1,1,1,1,1,
-1,0,0,0,0,0,0,0, 0,0,0,1,0,0,0,0,
-0,0,0,0,0,0,0,0, 0,0,0,0,1,1,0,0,
+	0,0,0,0,1,0,0,1, 0,0,1,0,0,0,0,0,
+	1,1,1,1,1,1,1,1, 0,0,0,1,1,1,1,1,
+	1,0,0,0,0,0,0,0, 0,0,0,1,0,0,0,0,
+	0,0,0,0,0,0,0,0, 0,0,0,0,1,1,0,0,
 
-0,0,0,0,0,0,0,0, 0,0,1,1,1,1,1,1,
-1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,
-1,1,1,1,0,0,0,0, 0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,//last one is noicemap
+	0,0,0,0,0,0,0,0, 0,0,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,
+	1,1,1,1,0,0,0,0, 0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,//last one is noicemap
 
-0,0,1,1,1,1,1,1, 1,1,1,1,0,0,0,0,
-0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,
+	0,0,1,1,1,1,1,1, 1,1,1,1,0,0,0,0,
+	0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,
 
-0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0
+	0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0
 };
 
 void corereloadtexture(unsigned char index)
 {
-u32 ii,i;
-u16 x,y;
-i=0;
-ii=texturepointer[index];
-for (y=0;y<textureheader[index][2];y++){for (x=0;x<textureheader[index][1];x++)texturedata_0[i++]=texturedata[ii++];}
+	u32 ii,i;
+	u16 x,y;
+	i=0;
+	ii=texturepointer[index];
+	for (y=0; y<textureheader[index][2]; y++) {
+		for (x=0; x<textureheader[index][1]; x++)
+			texturedata_0[i++]=texturedata[ii++];
+	}
 
-glBindTexture(GL_TEXTURE_2D,zc_texture[index]);
-glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE,GL_MODULATE);
-glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
-glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
+	glBindTexture(GL_TEXTURE_2D,zc_texture[index]);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE,GL_MODULATE);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
 
 //if (index<24 | index>31)
-{
+	{
 //if ((textureheader[index][2]==16)|(index==8)|(index>=100))
-if (filtertag[index]==0)
-{
-glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-}
-else
-{
-glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-}
-}
-glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,textureheader[index][1],textureheader[index][2],0,GL_RGBA,GL_UNSIGNED_SHORT_4_4_4_4,texturedata_0);
+		if (filtertag[index]==0)
+		{
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+		}
+		else
+		{
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+		}
+	}
+	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,textureheader[index][1],textureheader[index][2],0,GL_RGBA,GL_UNSIGNED_SHORT_4_4_4_4,texturedata_0);
 }
 
 void coreupdatetextures(void)
 {
-u16 i;
-for (i=0;i<256;i++)if (texturereload[i]){texturereload[i]=0;if (textureheader[i][0]) corereloadtexture(i);}
+	u16 i;
+	for (i=0; i<256; i++)
+		if (texturereload[i]) {texturereload[i]=0; if (textureheader[i][0]) corereloadtexture(i); }
 }
 
 void zcore_video_init(void)
 {
-SDL_InitSubSystem(SDL_INIT_VIDEO);
-SDL_ShowCursor(SDL_DISABLE);
+	SDL_InitSubSystem(SDL_INIT_VIDEO);
+	SDL_ShowCursor(SDL_DISABLE);
 
 #ifdef GCW
-int screenbpp=16;
-EGLint numConfigs,majorVersion,minorVersion;
-EGLint egl_config_attr[] = {
-EGL_BUFFER_SIZE,   16,
-EGL_DEPTH_SIZE,    16,     
-EGL_STENCIL_SIZE,  0,
-EGL_SURFACE_TYPE,
-EGL_WINDOW_BIT,
-EGL_NONE
-};
+	int screenbpp=16;
+	EGLint numConfigs,majorVersion,minorVersion;
+	EGLint egl_config_attr[] = {
+		EGL_BUFFER_SIZE,   16,
+		EGL_DEPTH_SIZE,    16,
+		EGL_STENCIL_SIZE,  0,
+		EGL_SURFACE_TYPE,
+		EGL_WINDOW_BIT,
+		EGL_NONE
+	};
 //screen=SDL_SetVideoMode(screenwidth,screenheight,screenbpp, SDL_SWSURFACE);
-screen=SDL_SetVideoMode(screenwidth,screenheight,screenbpp, SDL_HWSURFACE|SDL_TRIPLEBUF);
-glDisplay=eglGetDisplay(EGL_DEFAULT_DISPLAY);
-eglInitialize(glDisplay, &majorVersion, &minorVersion );
-eglChooseConfig(glDisplay, egl_config_attr, &glConfig, 1, &numConfigs);
-SDL_SysWMinfo sysInfo;
-SDL_VERSION(&sysInfo.version);
-SDL_GetWMInfo(&sysInfo);
-glSurface = eglCreateWindowSurface(glDisplay, glConfig, 0, NULL);
-glContext = eglCreateContext(glDisplay, glConfig, EGL_NO_CONTEXT, NULL);
-eglMakeCurrent(glDisplay, glSurface, glSurface, glContext);
-eglSwapInterval(glDisplay, 1);      // VSYNC
-glVertexPointer(3,GL_FIXED,0,mesh);
-glTexCoordPointer(2,GL_FIXED,0,mesht);
-glFogf(GL_FOG_MODE,GL_LINEAR);
-glAlphaFuncx(GL_GREATER,65536/2);
+	screen=SDL_SetVideoMode(screenwidth,screenheight,screenbpp, SDL_HWSURFACE|SDL_TRIPLEBUF);
+	glDisplay=eglGetDisplay(EGL_DEFAULT_DISPLAY);
+	eglInitialize(glDisplay, &majorVersion, &minorVersion );
+	eglChooseConfig(glDisplay, egl_config_attr, &glConfig, 1, &numConfigs);
+	SDL_SysWMinfo sysInfo;
+	SDL_VERSION(&sysInfo.version);
+	SDL_GetWMInfo(&sysInfo);
+	glSurface = eglCreateWindowSurface(glDisplay, glConfig, 0, NULL);
+	glContext = eglCreateContext(glDisplay, glConfig, EGL_NO_CONTEXT, NULL);
+	eglMakeCurrent(glDisplay, glSurface, glSurface, glContext);
+	eglSwapInterval(glDisplay, 1); // VSYNC
+	glVertexPointer(3,GL_FIXED,0,mesh);
+	glTexCoordPointer(2,GL_FIXED,0,mesht);
+	glFogf(GL_FOG_MODE,GL_LINEAR);
+	glAlphaFuncx(GL_GREATER,65536/2);
 #endif
 
 #ifdef PCEGL
-const char* output;
-EGLBoolean result;
-EGLint egl_config_attr[] = {
-EGL_BUFFER_SIZE,   16,
-EGL_DEPTH_SIZE,    16,     
-EGL_STENCIL_SIZE,  0,
-EGL_SURFACE_TYPE,
-EGL_WINDOW_BIT,
-EGL_NONE
-};
-EGLint numConfigs,majorVersion,minorVersion;
-int screenbpp=16;
-screen=SDL_SetVideoMode(screenwidth,screenheight,screenbpp, SDL_SWSURFACE|fullscreen); // | SDL_FULLSCREEN);
-g_x11Display = XOpenDisplay(NULL);
+	const char* output;
+	EGLBoolean result;
+	EGLint egl_config_attr[] = {
+		EGL_BUFFER_SIZE,   16,
+		EGL_DEPTH_SIZE,    16,
+		EGL_STENCIL_SIZE,  0,
+		EGL_SURFACE_TYPE,
+		EGL_WINDOW_BIT,
+		EGL_NONE
+	};
+	EGLint numConfigs,majorVersion,minorVersion;
+	int screenbpp=16;
+	screen=SDL_SetVideoMode(screenwidth,screenheight,screenbpp, SDL_SWSURFACE|fullscreen); // | SDL_FULLSCREEN);
+	g_x11Display = XOpenDisplay(NULL);
 #define _EGL_DSP (EGLNativeDisplayType)g_x11Display
-glDisplay=eglGetDisplay(_EGL_DSP);
-eglInitialize(glDisplay, &majorVersion, &minorVersion );
-eglChooseConfig(glDisplay, egl_config_attr, &glConfig, 1, &numConfigs);
-SDL_SysWMinfo sysInfo;
-SDL_VERSION(&sysInfo.version); //Set SDL version
-SDL_GetWMInfo(&sysInfo);
-glContext = eglCreateContext(glDisplay, glConfig, EGL_NO_CONTEXT, NULL);
-glSurface=eglCreateWindowSurface(glDisplay,glConfig,(EGLNativeWindowType)sysInfo.info.x11.window,0);
-eglMakeCurrent(glDisplay, glSurface, glSurface, glContext);
-eglSwapInterval(glDisplay, 1);      // VSYNC
-glVertexPointer(3,GL_FIXED,0,mesh);
-glTexCoordPointer(2,GL_FIXED,0,mesht);
-glFogf(GL_FOG_MODE,GL_LINEAR);
-glAlphaFuncx(GL_GREATER,65536/2);
+	glDisplay=eglGetDisplay(_EGL_DSP);
+	eglInitialize(glDisplay, &majorVersion, &minorVersion );
+	eglChooseConfig(glDisplay, egl_config_attr, &glConfig, 1, &numConfigs);
+	SDL_SysWMinfo sysInfo;
+	SDL_VERSION(&sysInfo.version); //Set SDL version
+	SDL_GetWMInfo(&sysInfo);
+	glContext = eglCreateContext(glDisplay, glConfig, EGL_NO_CONTEXT, NULL);
+	glSurface=eglCreateWindowSurface(glDisplay,glConfig,(EGLNativeWindowType)sysInfo.info.x11.window,0);
+	eglMakeCurrent(glDisplay, glSurface, glSurface, glContext);
+	eglSwapInterval(glDisplay, 1); // VSYNC
+	glVertexPointer(3,GL_FIXED,0,mesh);
+	glTexCoordPointer(2,GL_FIXED,0,mesht);
+	glFogf(GL_FOG_MODE,GL_LINEAR);
+	glAlphaFuncx(GL_GREATER,65536/2);
 #endif
 
 #ifdef PC32
 //screenwidth=800;
 //screenheight=600;
-SDL_GL_SetAttribute(SDL_GL_RED_SIZE,5);
-SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE,5);
-SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,5);
-SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,16);
-SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,1);
-screen=SDL_SetVideoMode(screenwidth,screenheight,32, SDL_OPENGL | SDL_FULLSCREEN);
+	SDL_GL_SetAttribute(SDL_GL_RED_SIZE,5);
+	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE,5);
+	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,5);
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,16);
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,1);
+	screen=SDL_SetVideoMode(screenwidth,screenheight,32, SDL_OPENGL | SDL_FULLSCREEN);
 //screen=SDL_SetVideoMode(screenwidth,screenheight,32, SDL_OPENGL);
 
-glVertexPointer(3,GL_FLOAT,0,mesh);
-glTexCoordPointer(2,GL_FLOAT,0,mesht);
-glFogi(GL_FOG_MODE,GL_LINEAR);
+	glVertexPointer(3,GL_FLOAT,0,mesh);
+	glTexCoordPointer(2,GL_FLOAT,0,mesht);
+	glFogi(GL_FOG_MODE,GL_LINEAR);
 
-glFogf(GL_FOG_START,5.0f);
-glFogf(GL_FOG_END,7.0f);
+	glFogf(GL_FOG_START,5.0f);
+	glFogf(GL_FOG_END,7.0f);
 
-
-glAlphaFunc(GL_GREATER,0.5);
-glClear(GL_ACCUM_BUFFER_BIT);
+	glAlphaFunc(GL_GREATER,0.5);
+	glClear(GL_ACCUM_BUFFER_BIT);
 //glHint (GL_FOG_HINT, GL_NICEST);
 #endif
 #ifdef GP2X
-screen=SDL_SetVideoMode(320,240,16, SDL_OPENGL);
-EGLint numConfigs,majorVersion,minorVersion;
+	screen=SDL_SetVideoMode(320,240,16, SDL_OPENGL);
+	EGLint numConfigs,majorVersion,minorVersion;
 
-hNativeWnd=OS_CreateWindow();
+	hNativeWnd=OS_CreateWindow();
 
-glDisplay=eglGetDisplay((NativeDisplayType)0);
-eglInitialize(glDisplay,&majorVersion,&minorVersion);
-eglChooseConfig(glDisplay,attrib_list,&glConfig,1,&numConfigs);
-glSurface=eglCreateWindowSurface(glDisplay,glConfig,hNativeWnd,attrib_list);
-glContext=eglCreateContext(glDisplay,glConfig,EGL_NO_CONTEXT,attrib_list);
-eglMakeCurrent(glDisplay,glSurface,glSurface,glContext);
+	glDisplay=eglGetDisplay((NativeDisplayType)0);
+	eglInitialize(glDisplay,&majorVersion,&minorVersion);
+	eglChooseConfig(glDisplay,attrib_list,&glConfig,1,&numConfigs);
+	glSurface=eglCreateWindowSurface(glDisplay,glConfig,hNativeWnd,attrib_list);
+	glContext=eglCreateContext(glDisplay,glConfig,EGL_NO_CONTEXT,attrib_list);
+	eglMakeCurrent(glDisplay,glSurface,glSurface,glContext);
 
-SDL_ShowCursor(SDL_DISABLE);
-glVertexPointer(3,GL_FIXED,0,mesh);
-glTexCoordPointer(2,GL_FIXED,0,mesht);
-glFogf(GL_FOG_MODE,GL_LINEAR);
-glAlphaFuncx(GL_GREATER,65536/2);
+	SDL_ShowCursor(SDL_DISABLE);
+	glVertexPointer(3,GL_FIXED,0,mesh);
+	glTexCoordPointer(2,GL_FIXED,0,mesht);
+	glFogf(GL_FOG_MODE,GL_LINEAR);
+	glAlphaFuncx(GL_GREATER,65536/2);
 #endif
 
-glGenTextures(256,zc_texture);
-glColorPointer(4,GL_UNSIGNED_BYTE,0,meshc);
-glEnableClientState(GL_VERTEX_ARRAY);
-glEnableClientState(GL_COLOR_ARRAY);
-glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-glBlendFunc (GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	glGenTextures(256,zc_texture);
+	glColorPointer(4,GL_UNSIGNED_BYTE,0,meshc);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glBlendFunc (GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
 //glLoadIdentity();
-coreupdatetextures();
+	coreupdatetextures();
 }
 
 void zcore_video_frame(void)
 {
-if (thisframenice)
-{
-coreupdatetextures();
-corerenderrender();
+	if (thisframenice)
+	{
+		coreupdatetextures();
+		corerenderrender();
 
 #ifdef PC32
-SDL_GL_SwapBuffers();
+		SDL_GL_SwapBuffers();
 #endif
 
 #if defined(GP2X) || defined(GCW) || defined(PCEGL)
-eglSwapBuffers(glDisplay, glSurface);
+		eglSwapBuffers(glDisplay, glSurface);
 #endif
-}
+	}
 }
 
 void zcore_video_down(void)
 {
-glDeleteTextures(256,zc_texture);
+	glDeleteTextures(256,zc_texture);
 #if defined(GP2X) || defined(PCEGL) || defined(GCW)
-eglDestroySurface(glDisplay,glSurface);
-eglDestroyContext(glDisplay,glContext);
-eglTerminate(glDisplay);
+	eglDestroySurface(glDisplay,glSurface);
+	eglDestroyContext(glDisplay,glContext);
+	eglTerminate(glDisplay);
 #ifdef GP2X
-free(hNativeWnd);
+	free(hNativeWnd);
 #endif
 #endif
 }
@@ -284,23 +290,22 @@ free(hNativeWnd);
 
 void zcore_sound_init(void)
 {
-SDL_InitSubSystem(SDL_INIT_AUDIO);
+	SDL_InitSubSystem(SDL_INIT_AUDIO);
 
-Mix_OpenAudio(audio_rate,audio_format,audio_channels,audio_buffers);
-Mix_QuerySpec(&audio_rate,&audio_format,&audio_channels);
+	Mix_OpenAudio(audio_rate,audio_format,audio_channels,audio_buffers);
+	Mix_QuerySpec(&audio_rate,&audio_format,&audio_channels);
 
-zcinitsound();
+	zcinitsound();
 }
 
 void zcore_sound_frame(void)
 {
-zcsoundstep();
+	zcsoundstep();
 }
 
 void zcore_sound_down(void)
 {
-
-Mix_CloseAudio();
+	Mix_CloseAudio();
 }
 
 // Sound SubSystem End
@@ -310,30 +315,38 @@ Mix_CloseAudio();
 int i_keyb[20];
 static const SDLKey code_keyb[20]=
 {
-SDLK_LCTRL,SDLK_SPACE,SDLK_LALT,SDLK_z,SDLK_LSHIFT,SDLK_x,SDLK_7,SDLK_8,
-SDLK_ESCAPE,SDLK_c,SDLK_q,SDLK_w,SDLK_e,SDLK_r,SDLK_t,SDLK_BACKSPACE,
-SDLK_UP,SDLK_RIGHT,SDLK_DOWN,SDLK_LEFT
+	SDLK_LCTRL,SDLK_SPACE,SDLK_LALT,SDLK_z,SDLK_LSHIFT,SDLK_x,SDLK_7,SDLK_8,
+	SDLK_ESCAPE,SDLK_c,SDLK_q,SDLK_w,SDLK_e,SDLK_r,SDLK_t,SDLK_BACKSPACE,
+	SDLK_UP,SDLK_RIGHT,SDLK_DOWN,SDLK_LEFT
 };
-s8 jkey_map[16]={0,1,2,3,4,5,6,7,8,9,-1,-1,-1,-1,-1,-1};
+s8 jkey_map[16]={
+	0,1,2,3,4,5,6,7,8,9,-1,-1,-1,-1,-1,-1
+};
 #endif
 
 #ifdef GCW
 int i_keyb[20];
 static const SDLKey code_keyb[20]=
 {
-SDLK_SPACE,SDLK_LALT,SDLK_LCTRL,SDLK_LSHIFT,SDLK_TAB,SDLK_BACKSPACE,SDLK_7,SDLK_8,
-SDLK_RETURN,SDLK_ESCAPE,SDLK_q,SDLK_w,SDLK_e,SDLK_r,SDLK_t,SDLK_PAUSE,
-SDLK_UP,SDLK_RIGHT,SDLK_DOWN,SDLK_LEFT
+	SDLK_SPACE,SDLK_LALT,SDLK_LCTRL,SDLK_LSHIFT,SDLK_TAB,SDLK_BACKSPACE,SDLK_7,SDLK_8,
+	SDLK_RETURN,SDLK_ESCAPE,SDLK_q,SDLK_w,SDLK_e,SDLK_r,SDLK_t,SDLK_PAUSE,
+	SDLK_UP,SDLK_RIGHT,SDLK_DOWN,SDLK_LEFT
 };
-s8 jkey_map[16]= {0,1,2,3,4,5,6,7,8,9,-1,-1,-1,-1,-1,-1};
+s8 jkey_map[16]= {
+	0,1,2,3,4,5,6,7,8,9,-1,-1,-1,-1,-1,-1
+};
 #endif
 
 #ifdef GP2XWIZ
-s8 jkey_map[16]={12,14,13,15,10,11,17,16,8,9,-1,-1,-1,-1,-1,-1};
+s8 jkey_map[16]={
+	12,14,13,15,10,11,17,16,8,9,-1,-1,-1,-1,-1,-1
+};
 #endif
 
 #ifdef GP2XCAANOO
-s8 jkey_map[16]={ 0, 1, 2, 3, 4, 5, 0, 0,6,8,-1,-1,-1,-1,-1,-1};
+s8 jkey_map[16]={
+	0, 1, 2, 3, 4, 5, 0, 0,6,8,-1,-1,-1,-1,-1,-1
+};
 #endif
 
 u16 s_mbutton;
@@ -342,88 +355,124 @@ s32 mousetapfade;
 
 void zcore_input_init(void)
 {
-u8 i;
+	u8 i;
 
-SDL_InitSubSystem(SDL_INIT_JOYSTICK);
-for (i=0;i<16;i++) button[i]=0;
-if (SDL_NumJoysticks()>0) { 
+	SDL_InitSubSystem(SDL_INIT_JOYSTICK);
+	for (i=0; i<16; i++)
+		button[i]=0;
+	if (SDL_NumJoysticks()>0) {
 #ifdef GCW
-for (i = 0; i < SDL_NumJoysticks(); i++){
-if (strcmp(SDL_JoystickName(i), "linkdev device (Analog 2-axis 8-button 2-hat)") == 0) gamepad = SDL_JoystickOpen(i);}
+		for (i = 0; i < SDL_NumJoysticks(); i++) {
+			if (strcmp(SDL_JoystickName(i), "linkdev device (Analog 2-axis 8-button 2-hat)") == 0) gamepad = SDL_JoystickOpen(i); }
 #else
-gamepad=SDL_JoystickOpen(whichjoystick);
+		gamepad=SDL_JoystickOpen(whichjoystick);
 #endif
-}}
+	}
+}
 
 u16 s_button[16];
 
 void zcore_input_frame(void)
 {
-u8 i,k;
-for (i=0;i<2;i++) axis[i]=0;
+	u8 i,k;
+	for (i=0; i<2; i++)
+		axis[i]=0;
 
-if (SDL_NumJoysticks()>0)
-{ SDL_JoystickUpdate();for (k=0;k<16;k++) if (jkey_map[k]>=0) {if (SDL_JoystickGetButton(gamepad,jkey_map[k])>0) s_button[k]++; else s_button[k]=0;}
-axis[0]=SDL_JoystickGetAxis(gamepad,0);
-axis[1]=SDL_JoystickGetAxis(gamepad,1);
+	if (SDL_NumJoysticks()>0)
+	{
+		SDL_JoystickUpdate();
+		for (k=0; k<16; k++)
+			if (jkey_map[k]>=0) {if (SDL_JoystickGetButton(gamepad,jkey_map[k])>0) s_button[k]++; else s_button[k]=0; }
+		axis[0]=SDL_JoystickGetAxis(gamepad,0);
+		axis[1]=SDL_JoystickGetAxis(gamepad,1);
 
-axis[0]=axis[0]/256;
-axis[1]=axis[1]/256;
+		axis[0]=axis[0]/256;
+		axis[1]=axis[1]/256;
 #ifdef GP2XWIZ
-if (SDL_JoystickGetButton(gamepad,0)>0) axis[1]=-128;else
-if (SDL_JoystickGetButton(gamepad,1)>0) {axis[1]=-128;axis[0]=-128;}else
-if (SDL_JoystickGetButton(gamepad,2)>0) {axis[1]=0;axis[0]=-128;}else
-if (SDL_JoystickGetButton(gamepad,3)>0) {axis[1]=128;axis[0]=-128;}else
-if (SDL_JoystickGetButton(gamepad,4)>0) {axis[1]=128;axis[0]=0;}else
-if (SDL_JoystickGetButton(gamepad,5)>0) {axis[1]=128;axis[0]=128;}else
-if (SDL_JoystickGetButton(gamepad,6)>0) {axis[1]=0;axis[0]=128;}else
-if (SDL_JoystickGetButton(gamepad,7)>0) {axis[1]=-128;axis[0]=128;}
+		if (SDL_JoystickGetButton(gamepad,0)>0) axis[1]=-128; else
+		if (SDL_JoystickGetButton(gamepad,1)>0) {
+			axis[1]=-128;
+			axis[0]=-128;
+		}else
+		if (SDL_JoystickGetButton(gamepad,2)>0) {
+			axis[1]=0;
+			axis[0]=-128;
+		}else
+		if (SDL_JoystickGetButton(gamepad,3)>0) {
+			axis[1]=128;
+			axis[0]=-128;
+		}else
+		if (SDL_JoystickGetButton(gamepad,4)>0) {
+			axis[1]=128;
+			axis[0]=0;
+		}else
+		if (SDL_JoystickGetButton(gamepad,5)>0) {
+			axis[1]=128;
+			axis[0]=128;
+		}else
+		if (SDL_JoystickGetButton(gamepad,6)>0) {
+			axis[1]=0;
+			axis[0]=128;
+		}else
+		if (SDL_JoystickGetButton(gamepad,7)>0) {
+			axis[1]=-128;
+			axis[0]=128;
+		}
 #endif
-}
-else for (i=0;i<16;i++) s_button[i]=0;
+	}
+	else
+		for (i=0; i<16; i++)
+			s_button[i]=0;
 
-SDL_Event event;
-while (SDL_PollEvent (&event))
-switch (event.type)
-{
+	SDL_Event event;
+	while (SDL_PollEvent (&event))
+		switch (event.type)
+		{
 #if defined(PC32) || defined(GCW) || defined(PCEGL)
-case SDL_KEYDOWN:
-for (i=0;i<20;i++) if (event.key.keysym.sym==code_keyb[i]) i_keyb[i]=1; break;
-case SDL_KEYUP: for (i=0;i<20;i++) if (event.key.keysym.sym==code_keyb[i]) i_keyb[i]=0; 
+		case SDL_KEYDOWN:
+			for (i=0; i<20; i++)
+				if (event.key.keysym.sym==code_keyb[i]) i_keyb[i]=1; break;
+		case SDL_KEYUP: for (i=0; i<20; i++)
+				if (event.key.keysym.sym==code_keyb[i]) i_keyb[i]=0;
 #ifdef GCW //recentre gsensor with home button (power switch)
-if(event.key.keysym.sym==SDLK_HOME) gsensor_recentre=1;
+			if(event.key.keysym.sym==SDLK_HOME) gsensor_recentre=1;
 #endif
-break;
+			break;
 #endif
-case SDL_QUIT:zcoreenabled=0;break;
-}
+		case SDL_QUIT: zcoreenabled=0;
+			break;
+		}
 
 #if defined(PC32) || defined(GCW) || defined(PCEGL)
-for (k=0;k<16;k++) {if (i_keyb[k]>0) s_button[k]++;}
-if (i_keyb[16]>0) axis[1]=-128;
-if (i_keyb[17]>0) axis[0]=128;
-if (i_keyb[18]>0) axis[1]=128;
-if (i_keyb[19]>0) axis[0]=-128;
+	for (k=0; k<16; k++) {
+		if (i_keyb[k]>0)
+			s_button[k]++;
+	}
+	if (i_keyb[16]>0) axis[1]=-128;
+	if (i_keyb[17]>0) axis[0]=128;
+	if (i_keyb[18]>0) axis[1]=128;
+	if (i_keyb[19]>0) axis[0]=-128;
 #endif
 
-for (i=0;i<16;i++)
-if (s_button[i]) button[i]++; else button[i]=0;
+	for (i=0; i<16; i++)
+		if (s_button[i]) button[i]++; else button[i]=0;
 
 //TouchMouse
-if (SDL_GetMouseState(&mouseaxis[0],&mouseaxis[1])) s_mbutton++; else s_mbutton=0;
+	if (SDL_GetMouseState(&mouseaxis[0],&mouseaxis[1])) s_mbutton++; else s_mbutton=0;
 
-if (s_mbutton==1) {holdmouseaxis[0]=mouseaxis[0];holdmouseaxis[1]=mouseaxis[1];}
+	if (s_mbutton==1) {holdmouseaxis[0]=mouseaxis[0]; holdmouseaxis[1]=mouseaxis[1];}
 
-mousetap=0;
-if (s_mbutton>0 & mousebutton[0]==0 & mousetapfade>0) mousetap=1;
+	mousetap=0;
+	if (s_mbutton>0 & mousebutton[0]==0 & mousetapfade>0) mousetap=1;
 
-mousebutton[0]=s_mbutton;
+	mousebutton[0]=s_mbutton;
 
-if (mousebutton[0]==1) mousetapfade=32; else if (mousetapfade>0) mousetapfade--;
+	if (mousebutton[0]==1) mousetapfade=32; else if (mousetapfade>0)
+		mousetapfade--;
 
 #ifdef GP2XWIZ
-if (button[6]) {if (configdata[8]>0) configdata[8]--;if (configdata[9]>0) configdata[9]--;}
-if (button[7]) {if (configdata[8]<128) configdata[8]++;if (configdata[9]<128) configdata[9]++;}
+	if (button[6]) {if (configdata[8]>0) configdata[8]--; if (configdata[9]>0) configdata[9]--; }
+	if (button[7]) {if (configdata[8]<128) configdata[8]++; if (configdata[9]<128) configdata[9]++; }
 
 #endif
 
@@ -437,70 +486,71 @@ void zcore_input_down(void)
 s32 fpsdone,tickcount2=0,tickcount3=0,fstick1,fstick0;
 void calcfps(void)
 {
-tickcount3=tickcount;
-tickcount=SDL_GetTicks();frametime=tickcount-tickcount3;
-if (tickcount-tickcount2>=1000)
-{fps=fpsdone;fpsdone++;tickcount2=tickcount;fpsdone=0;}
-fpsdone++;
+	tickcount3=tickcount;
+	tickcount=SDL_GetTicks();
+	frametime=tickcount-tickcount3;
+	if (tickcount-tickcount2>=1000)
+	{fps=fpsdone; fpsdone++; tickcount2=tickcount; fpsdone=0;}
+	fpsdone++;
 }
 
 void zcoreinit(void)
 {
-zcore_sound_init();
-zcore_video_init();
-zcore_input_init();
-zlextinit();
+	zcore_sound_init();
+	zcore_video_init();
+	zcore_input_init();
+	zlextinit();
 }
 
 void zcorestep(void)
 {
-frameskip=configdata[12];
+	frameskip=configdata[12];
 //if (frameskip) thisframenice=((count+1) & 1); else thisframenice=1;
-if (frameskip) thisframenice=((count) % (frameskip+1))==0; else thisframenice=1;
-if (gamemode==ZGM_MENU | gamemode==ZGM_CONFIG | gamemode==ZGM_SELECTOR) thisframenice=1;
+	if (frameskip) thisframenice=((count) % (frameskip+1))==0; else thisframenice=1;
+	if (gamemode==ZGM_MENU | gamemode==ZGM_CONFIG | gamemode==ZGM_SELECTOR) thisframenice=1;
 
-zcore_input_frame();
-fstick0=SDL_GetTicks();
-corerenderreset();
-zresmstep();
-zcore_video_frame();
-zcore_sound_frame();
-zlextframe();
-count++;
-fstick1=SDL_GetTicks();
-currenttick=fstick1;
-if (thisframenice) calcfps();
+	zcore_input_frame();
+	fstick0=SDL_GetTicks();
+	corerenderreset();
+	zresmstep();
+	zcore_video_frame();
+	zcore_sound_frame();
+	zlextframe();
+	count++;
+	fstick1=SDL_GetTicks();
+	currenttick=fstick1;
+	if (thisframenice) calcfps();
 #ifdef PC32
-SDL_Delay(5);
+	SDL_Delay(5);
 #endif
 #if defined(GP2X) || defined(GCW) || defined(PCEGL)
-if (gamemode!=ZGM_MENU & gamemode!=ZGM_CONFIG & gamemode!=ZGM_SELECTOR)
-if (frameskip)
-if (thisframenice)
-if (fstick1-fstick0<40) SDL_Delay(1);
+	if (gamemode!=ZGM_MENU & gamemode!=ZGM_CONFIG & gamemode!=ZGM_SELECTOR)
+		if (frameskip)
+			if (thisframenice)
+				if (fstick1-fstick0<40) SDL_Delay(1);
 #endif
-
 
 }
 
 void zcoreloop(void)
 {
-count=0;
-zcoreenabled=1;
-while (zcoreenabled!=0) { zcorestep();} // Embrace thy hopeless destiny loop
+	count=0;
+	zcoreenabled=1;
+	while (zcoreenabled!=0) {
+		zcorestep();
+	}                               // Embrace thy hopeless destiny loop
 }
 
 void zcoredown(void)
 {
-zcore_input_down();
-zcore_video_down();
-zcore_sound_down();
-zlextshutdown();
-SDL_Quit();
+	zcore_input_down();
+	zcore_video_down();
+	zcore_sound_down();
+	zlextshutdown();
+	SDL_Quit();
 
 #ifdef GP2X
-chdir("/usr/gp2x");
-execl("/usr/gp2x/gp2xmenu","/usr/gp2x/gp2xmenu",NULL);
+	chdir("/usr/gp2x");
+	execl("/usr/gp2x/gp2xmenu","/usr/gp2x/gp2xmenu",NULL);
 #endif
 }
-

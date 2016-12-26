@@ -11,8 +11,9 @@ u8 bgm,gamemode,newgamemode,playmode;
 s8 gameswitchdelay=0,soundbanks=46;//-1
 
 u8 configdata[32]=
-{1,0,0,0, 0,0,1,1, 128,48, 1,1, 2,1,0,0,
-99,59, 199,59, 199,59, 199,59, 199,59, 199,59, 199,59, 199,59
+{
+	1,0,0,0, 0,0,1,1, 128,48, 1,1, 2,1,0,0,
+	99,59, 199,59, 199,59, 199,59, 199,59, 199,59, 199,59, 199,59
 };//0-7 mainmenu, 8-soundvolume, 9 -music volume, 10vibro, 11gsensor, 12turbohack, 13noise 14,15hz 16-23 levels
 
 s32 fps=0,tickcount=0;
@@ -78,7 +79,6 @@ s32 rmapmaxh=(MAPSIZEH)*65536,rmapmaxy=(MAPSIZEY)*65536;
 u16 mapmaxh=MAPSIZEH,mapmaxy=MAPSIZEY;
 s32 truemaxmaph,truemaxmapx;
 
-
 u8 mp1mode;
 
 u8 mpheader[64];
@@ -91,7 +91,6 @@ u8 intrestingmp[MAPSIZEH][MAPSIZEH][MAPSIZEY];
 u8 terrtexx[40][4];
 
 s32 mcube[MAPSIZEH+1][MAPSIZEH+1][MAPSIZEY+1][3];
-
 
 u8 lightg[9];
 s32 lightgv[3];
@@ -107,11 +106,15 @@ u8 mobcontrol;
 s32 tpscam[16];
 
 s32 sprite[33][8],bullet[33][16];
-s32 tension[8]={255,255,255,16,0,0,255,255};
+s32 tension[8]={
+	255,255,255,16,0,0,255,255
+};
 
 u8 playeraim=0,portraitmode=0,fpsdisplay=0,frameskip=1,thisframenice=1;
 
-s32 vibro=127,gsensor[6]={0,0,0, 0,0,0};
+s32 vibro=127,gsensor[6]={
+	0,0,0, 0,0,0
+};
 
 s32 lcuber[3],lflare[8];
 

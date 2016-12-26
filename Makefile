@@ -26,7 +26,7 @@ LDFLAGS += -lX11 -lshake
 CFLAGS += -DPCEGL
 else
 LDFLAGS += $(OPK_DIR)/libshake.so.1
-CFLAGS +=  -DGCW  -DNOFOG -DNOHAPTIC
+CFLAGS += -Wsign-compare -Warray-bounds -Wmaybe-uninitialized -Wimplicit -Wunused -DGCW  -DNOFOG -DNOHAPTIC
 endif
 
 

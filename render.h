@@ -18,7 +18,6 @@ extern void zlFog(unsigned char value);
 extern void zlDepthTest(unsigned char value);
 extern void zlBlend(unsigned char value);
 
-
 extern void zlBeginQuads(void);
 extern void zlBindTexture(unsigned char i);
 extern void zlForceBindTexture(unsigned char i);
@@ -34,4 +33,3 @@ extern void zlRenderText(void);
 extern void zlRenderScreen(unsigned char index);
 extern void zlRenderQuad(void);
 extern void zlDrawTransmask(unsigned char r,unsigned char g,unsigned char b);
-
